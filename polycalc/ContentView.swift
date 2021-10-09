@@ -78,11 +78,11 @@ struct ContentView_Previews: PreviewProvider {
 }
 
 func calculate() -> [String] {
-    let attackerAttack = 3.0
+    let attackerAttack = 2.0
     let attackerHealth = 15.0
     let attackerMaxHealth = 15.0
     
-    let defenderDefence = 2.0
+    let defenderDefence = 1.0
     let defenderHealth = 10.0
     let defenderMaxHealth = 10.0
     
