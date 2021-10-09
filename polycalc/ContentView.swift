@@ -47,8 +47,8 @@ struct ContentView: View {
             }
             .alert(isPresented: $showAlert) {
                 Alert(
-                    title: Text(calculateWarriorWarrior()),
-                    message: Text(calculateWarriorWarriorTwo())
+                    title: Text("New health of defender:  \(calculate()[0])"),
+                    message: Text("New health of attacker: \(calculate()[1])")
                 )
             }
         }
@@ -77,15 +77,44 @@ struct ContentView_Previews: PreviewProvider {
     }
 }
 
-func calculateWarriorWarrior() -> String {
-    let blah = attackResult(attackForce: attackForce(power:2,health:10,maxHealth:10), totalDamage: totalDamage(attack: 2, defence: 2), power: 2)
-    return String(blah)
+func calculate() -> [String] {
+    let attackerAttack = 3.0
+    let attackerHealth = 15.0
+    let attackerMaxHealth = 15.0
+    
+    let defenderDefence = 2.0
+    let defenderHealth = 10.0
+    let defenderMaxHealth = 10.0
+    
+    let defenceBonus = 1.0
+    
+    let attackForce = attackForce(power:attackerAttack,health:attackerHealth,maxHealth:attackerMaxHealth)
+    let defenceForce = defenseForce(power:defenderDefence,health:defenderHealth,maxHealth:defenderMaxHealth,defenseBonus:defenceBonus)
+    
+    let totalDamage = attackForce + defenceForce
+    
+    let attackResult = attackResult(attackForce: attackForce, totalDamage: totalDamage, power: attackerAttack)
+    //theres something wrong with my new health of attacker thats making the attacker lose more health than expected
+    let defendResult = defendResult(defenceForce: defenceForce, totalDamage: totalDamage, power: defenderDefence)
+    //let blah = defendResult(defenceForce: defenseForce(power:3,health:15,maxHealth:15, defenseBonus: 1), totalDamage: totalDamage(attack: 3, defence: 3), power: 3)
+    
+    
+    return [String(defenderHealth - attackResult),String(attackerHealth-defendResult)]
 }
 
-func calculateWarriorWarriorTwo() -> String {
-    let blah = defendResult(defenceForce: attackForce(power:2,health:10,maxHealth:10), totalDamage: totalDamage(attack: 2, defence: 2), power: 2)
-    return String(blah)
-}
+//func calculateDefenderRemainingHealth() -> String {
+//    let attackerPower = 3.0
+//    let defenderPower = 1.0
+//    let defenderHealth = 10.0
+//    let defenderMaxHealth = 10.0
+//    let defenceBonus = 1.0
+//    //let defenderPower = 3.0
+//    let defenceForce = defenseForce(power:defenderPower,health:defenderHealth,maxHealth:defenderMaxHealth,defenseBonus:defenceBonus)
+//    let totalDamage = totalDamage(attack: attackerPower, defence: defenderPower)
+//    let blah = defendResult(defenceForce: defenceForce, totalDamage: totalDamage, power: attackerPower)
+//    //let blah = defendResult(defenceForce: defenseForce(power:3,health:15,maxHealth:15, defenseBonus: 1), totalDamage: totalDamage(attack: 3, defence: 3), power: 3)
+//    return String(Int((defenderHealth - blah).rounded()))
+//}
 
 func attackForce (power: Double, health: Double, maxHealth: Double) -> Double {
     return power * (health / maxHealth)
@@ -101,12 +130,12 @@ func totalDamage (attack: Double, defence: Double) -> Double {
 
 //may need to round
 func attackResult (attackForce: Double, totalDamage: Double, power: Double) -> Double {
-    return (attackForce / totalDamage) * power * 4.5
+    return ((attackForce / totalDamage) * power * 4.5).rounded()
 }
 
 //may need to round
 func defendResult (defenceForce: Double, totalDamage: Double, power: Double) -> Double {
-    return (defenceForce / totalDamage) * power * 4.5
+    return ((defenceForce / totalDamage) * power * 4.5).rounded()
 }
 
 /* attackForce = attacker.attack * (attacker.health / attacker.maxHealth)
