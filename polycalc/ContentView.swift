@@ -77,29 +77,44 @@ struct ContentView_Previews: PreviewProvider {
     }
 }
 
+struct Unit {
+    let name: String
+    //let img: Image
+    //attributes
+    let attack: Double
+    let defense: Double
+    let maxHealth: Double
+    //let movement: Double
+    //make the above attributes and this a primary
+    var health: Double
+}
+
 func calculate() -> [String] {
-    let attackerAttack = 2.0
-    let attackerHealth = 15.0
-    let attackerMaxHealth = 15.0
+    let warrior = Unit(name: "Warrior", attack: 2.0, defense: 2.0, maxHealth: 10.0, health: 10.0)
+    let rider = Unit(name: "Rider", attack: 2.0, defense: 1.0, maxHealth: 10.0, health: 10.0)
     
-    let defenderDefence = 1.0
-    let defenderHealth = 10.0
-    let defenderMaxHealth = 10.0
+//    let attackerAttack = 2.0
+//    let attackerHealth = 15.0
+//    let attackerMaxHealth = 15.0
+//
+//    let defenderDefence = 1.0
+//    let defenderHealth = 10.0
+//    let defenderMaxHealth = 10.0
     
     let defenceBonus = 1.0
     
-    let attackForce = attackForce(power:attackerAttack,health:attackerHealth,maxHealth:attackerMaxHealth)
-    let defenceForce = defenseForce(power:defenderDefence,health:defenderHealth,maxHealth:defenderMaxHealth,defenseBonus:defenceBonus)
+    let attackForce = attackForce(power:warrior.attack,health:warrior.health,maxHealth:warrior.maxHealth)
+    let defenceForce = defenseForce(power:rider.defense,health:rider.health,maxHealth:rider.maxHealth,defenseBonus:defenceBonus)
     
     let totalDamage = attackForce + defenceForce
     
-    let attackResult = attackResult(attackForce: attackForce, totalDamage: totalDamage, power: attackerAttack)
+    let attackResult = attackResult(attackForce: attackForce, totalDamage: totalDamage, power: warrior.attack)
     //theres something wrong with my new health of attacker thats making the attacker lose more health than expected
-    let defendResult = defendResult(defenceForce: defenceForce, totalDamage: totalDamage, power: defenderDefence)
+    let defendResult = defendResult(defenceForce: defenceForce, totalDamage: totalDamage, power: rider.defense)
     //let blah = defendResult(defenceForce: defenseForce(power:3,health:15,maxHealth:15, defenseBonus: 1), totalDamage: totalDamage(attack: 3, defence: 3), power: 3)
     
     
-    return [String(defenderHealth - attackResult),String(attackerHealth-defendResult)]
+    return [String(warrior.health - attackResult),String(rider.health-defendResult)]
 }
 
 //func calculateDefenderRemainingHealth() -> String {
