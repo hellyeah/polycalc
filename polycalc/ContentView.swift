@@ -8,11 +8,17 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State var attackerHealth:Int = 10
-    @State var defenderHealth:Int = 10
+    @State private var selectedAttackerIndex = 0
+    @State private var selectedDefenderIndex = 0
+    @State private var selectedAttackerHealth = 0
+    @State private var selectedDefenderHealth = 0
     @State private var showAlert = false
     
-    
+    //**we need an array of all the units
+    @State var unitsArray:Array = [Warrior, Rider, Defender, Giant]
+//    @State var selectedAttacker:Unit = Warrior
+//    @State var selectedDefender:Unit = Warrior
+
     var body: some View {
         VStack {
             Image(systemName: "swift")
@@ -23,18 +29,28 @@ struct ContentView: View {
             Text("Polycalc!")
                 .padding(.bottom, 25.0)
             Text("Attacker!")
-            Picker(selection: /*@START_MENU_TOKEN@*/.constant(1)/*@END_MENU_TOKEN@*/, label: Text("Unit")) {
-                Text("Warrior").tag(1)
-                Text("Rider").tag(2)
+            Picker(selection: $selectedAttackerIndex, label: Text("Unit")) {
+                ForEach (unitsArray.indices) { index in
+                    Text("\(unitsArray[index].name)").tag(index)
+                }
+//                Text(selectedAttacker.name).tag(1)
+//                Text(unitsArray[2].name).tag(2)
             }
-            Text(String(self.attackerHealth))
+            Text(String(self.unitsArray[selectedAttackerIndex].health))
                 .padding(.bottom, 50.0)
             Text("Defender!")
-            Picker(selection: .constant(1), label: Text("Unit")) {
-                Text("Warrior").tag(1)
-                Text("Rider").tag(2)
+            Picker(selection: $selectedDefenderIndex, label: Text("Unit")) {
+                ForEach (unitsArray.indices) { index in
+                    Text("\(unitsArray[index].name)").tag(index)
+                }
             }
-            Text(String(self.attackerHealth))
+            Picker(selection: $selectedDefenderHealth, label: Text("Unit")) {
+                Text("\(Int(self.unitsArray[selectedDefenderIndex].maxHealth))").tag(1)
+                ForEach (1..<Int(self.unitsArray[selectedDefenderIndex].health)) { index in
+                    Text("\(index)").tag(index)
+                }
+            }
+            Text(String(self.unitsArray[selectedDefenderIndex].health))
                 .padding(.bottom, 50.0)
 //            Button(action: {
 //                showAlert = true
@@ -43,12 +59,13 @@ struct ContentView: View {
 //            }
 //            .alert(isPresented: $showAlert, content: Alert(title: "blah"))
             Button("Calculate") {
+                unitsArray[selectedAttackerIndex].health = Double(selectedAttackerHealth)
                 showAlert = true
             }
             .alert(isPresented: $showAlert) {
                 Alert(
-                    title: Text("New health of defender:  \(calculate()[0])"),
-                    message: Text("New health of attacker: \(calculate()[1])")
+                    title: Text("New health of defender:  \(calculate(attacker:unitsArray[selectedAttackerIndex], defender:unitsArray[selectedDefenderIndex])[0])"),
+                    message: Text("New health of attacker: \(calculate(attacker:unitsArray[selectedAttackerIndex], defender:unitsArray[selectedDefenderIndex])[1])")
                 )
             }
         }
@@ -77,21 +94,26 @@ struct ContentView_Previews: PreviewProvider {
     }
 }
 
-struct Unit {
-    let name: String
-    //let img: Image
-    //attributes
-    let attack: Double
-    let defense: Double
-    let maxHealth: Double
-    //let movement: Double
-    //make the above attributes and this a primary
-    var health: Double
-}
+//struct Unit {
+//    let name: String
+//    //let img: Image
+//    //attributes
+//    let attack: Double
+//    let defense: Double
+//    let maxHealth: Double
+//    //let movement: Double
+//    //make the above attributes and this a primary
+//    var health: Double
+//    //var terrain: String (plains, field, forest, mountain)
+//    //var civ: Struct (nationality, tech)
+//}
 
-func calculate() -> [String] {
-    let warrior = Unit(name: "Warrior", attack: 2.0, defense: 2.0, maxHealth: 10.0, health: 10.0)
-    let rider = Unit(name: "Rider", attack: 2.0, defense: 1.0, maxHealth: 10.0, health: 10.0)
+func calculate(attacker: Unit, defender: Unit) -> [String] {
+//    let warrior = Unit(name: "Warrior", attack: 2.0, defense: 2.0, maxHealth: 10.0, health: 10.0)
+//    let rider = Unit(name: "Rider", attack: 2.0, defense: 1.0, maxHealth: 10.0, health: 10.0)
+    
+//    let attacker = attacker
+//    let defender = defender
     
 //    let attackerAttack = 2.0
 //    let attackerHealth = 15.0
@@ -102,19 +124,21 @@ func calculate() -> [String] {
 //    let defenderMaxHealth = 10.0
     
     let defenceBonus = 1.0
+    //**need to figure out how to set this
     
-    let attackForce = attackForce(power:warrior.attack,health:warrior.health,maxHealth:warrior.maxHealth)
-    let defenceForce = defenseForce(power:rider.defense,health:rider.health,maxHealth:rider.maxHealth,defenseBonus:defenceBonus)
+    let attackForce = attackForce(power:attacker.attack,health:attacker.health,maxHealth:attacker.maxHealth)
+    let defenceForce = defenseForce(power:defender.defense,health:defender.health,maxHealth:defender.maxHealth,defenseBonus:defenceBonus)
     
     let totalDamage = attackForce + defenceForce
     
-    let attackResult = attackResult(attackForce: attackForce, totalDamage: totalDamage, power: warrior.attack)
+    let attackResult = attackResult(attackForce: attackForce, totalDamage: totalDamage, power: attacker.attack)
     //theres something wrong with my new health of attacker thats making the attacker lose more health than expected
-    let defendResult = defendResult(defenceForce: defenceForce, totalDamage: totalDamage, power: rider.defense)
+    let defendResult = defendResult(defenceForce: defenceForce, totalDamage: totalDamage, power: defender.defense)
     //let blah = defendResult(defenceForce: defenseForce(power:3,health:15,maxHealth:15, defenseBonus: 1), totalDamage: totalDamage(attack: 3, defence: 3), power: 3)
     
-    
-    return [String(warrior.health - attackResult),String(rider.health-defendResult)]
+    print(String(defender.health))
+    print("blahblah")
+    return [String(attacker.health - attackResult),String(defender.health-defendResult)]
 }
 
 //func calculateDefenderRemainingHealth() -> String {
