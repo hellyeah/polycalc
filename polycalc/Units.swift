@@ -20,11 +20,15 @@ struct Unit {
     //var terrain: String (plains, field, forest, mountain)
     //var civ: Struct (nationality, tech)
     var defenceBonus: Double
+    
+//    func updateHealth(newHealth:Double) {
+//        health = newHealth
+//    }
 }
 
-let Warrior = Unit(name: "Warrior", attack: 2.0, defense: 2.0, maxHealth: 10.0, health: 10.0, defenceBonus: 1.0)
-let Rider = Unit(name: "Rider", attack: 2.0, defense: 1.0, maxHealth: 10.0, health: 10.0, defenceBonus: 1.0)
-let Defender = Unit(name: "Defender", attack: 1.0, defense: 3.0, maxHealth: 15.0, health: 15.0, defenceBonus: 1.0)
-let Giant = Unit(name: "Giant", attack: 5.0, defense: 4.0, maxHealth: 40.0, health: 40.0, defenceBonus: 1.0)
-let Giant2 = Unit(name: "Giant2", attack: 5.0, defense: 4.0, maxHealth: 40.0, health: 22.0, defenceBonus: 1.0)
+var Warrior = Unit(name: "Warrior", attack: 2.0, defense: 2.0, maxHealth: 10.0, health: 10.0, defenceBonus: 1.0)
+var Rider = Unit(name: "Rider", attack: 2.0, defense: 1.0, maxHealth: 10.0, health: 10.0, defenceBonus: 1.0)
+var Defender = Unit(name: "Defender", attack: 1.0, defense: 3.0, maxHealth: 15.0, health: 15.0, defenceBonus: 1.0)
+var Giant = Unit(name: "Giant", attack: 5.0, defense: 4.0, maxHealth: 40.0, health: 40.0, defenceBonus: 1.0)
+var Giant2 = Unit(name: "Giant2", attack: 5.0, defense: 4.0, maxHealth: 40.0, health: 22.0, defenceBonus: 1.0)
 

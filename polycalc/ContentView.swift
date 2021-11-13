@@ -10,8 +10,10 @@ import SwiftUI
 struct ContentView: View {
     @State private var selectedAttackerIndex = 0
     @State private var selectedDefenderIndex = 0
-    @State private var selectedAttackerHealth = 0
-    @State private var selectedDefenderHealth = 0
+    @State private var selectedAttackerHealth = 10
+    @State private var selectedDefenderHealth = 10
+    @State private var currentAttacker:Unit = Warrior
+    @State private var currentDefender:Unit = Warrior
     @State private var showAlert = false
     
     //**we need an array of all the units
@@ -60,12 +62,23 @@ struct ContentView: View {
 //            .alert(isPresented: $showAlert, content: Alert(title: "blah"))
             Button("Calculate") {
                 unitsArray[selectedAttackerIndex].health = Double(selectedAttackerHealth)
+                //find a more elegant way of updating the health of each unit
+//                currentAttacker = Unit(name: unitsArray[selectedAttackerIndex].name, attack: unitsArray[selectedAttackerIndex].attack, defense: unitsArray[selectedAttackerIndex].defense, maxHealth: unitsArray[selectedAttackerIndex].maxHealth, health: Double(selectedAttackerHealth), defenceBonus: unitsArray[selectedAttackerIndex].defenceBonus)
+                
+                currentAttacker = unitsArray[selectedAttackerIndex]
+                
+//                currentDefender = Unit(name: unitsArray[selectedDefenderIndex].name, attack: unitsArray[selectedDefenderIndex].attack, defense: unitsArray[selectedDefenderIndex].defense, maxHealth: unitsArray[selectedDefenderIndex].maxHealth, health: Double(selectedDefenderHealth), defenceBonus: unitsArray[selectedDefenderIndex].defenceBonus)
+                
+                
+                unitsArray[selectedDefenderIndex].health = Double(selectedDefenderHealth)
+                
+                currentDefender = unitsArray[selectedDefenderIndex]
                 showAlert = true
             }
             .alert(isPresented: $showAlert) {
                 Alert(
-                    title: Text("New health of defender:  \(calculate(attacker:unitsArray[selectedAttackerIndex], defender:unitsArray[selectedDefenderIndex])[0])"),
-                    message: Text("New health of attacker: \(calculate(attacker:unitsArray[selectedAttackerIndex], defender:unitsArray[selectedDefenderIndex])[1])")
+                    title: Text("New health of defender:  \(calculate(attacker:currentAttacker, defender:currentDefender)[0])"),
+                    message: Text("New health of attacker: \(calculate(attacker:currentAttacker, defender:currentDefender)[1])")
                 )
             }
         }
