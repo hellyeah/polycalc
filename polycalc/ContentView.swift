@@ -10,11 +10,12 @@ import SwiftUI
 struct ContentView: View {
     @State private var selectedAttackerIndex = 0
     @State private var selectedDefenderIndex = 0
-    @State private var selectedAttackerHealth = 10
-    @State private var selectedDefenderHealth = 10
     @State private var currentAttacker:Unit = Warrior
     @State private var currentDefender:Unit = Warrior
+    @State private var selectedAttackerHealth = 10.0
+    @State private var selectedDefenderHealth = 10.0
     @State private var showAlert = false
+    @State private var pickerID:Int = 0
     
     //**we need an array of all the units
     @State var unitsArray:Array = [Warrior, Rider, Defender, Giant]
@@ -35,24 +36,39 @@ struct ContentView: View {
                 ForEach (unitsArray.indices) { index in
                     Text("\(unitsArray[index].name)").tag(index)
                 }
+                .onChange(of: selectedAttackerIndex) { _ in
+                    currentAttacker = unitsArray[selectedAttackerIndex]
+                    selectedAttackerHealth = unitsArray[selectedAttackerIndex].health
+                }
 //                Text(selectedAttacker.name).tag(1)
 //                Text(unitsArray[2].name).tag(2)
             }
             Text(String(self.unitsArray[selectedAttackerIndex].health))
                 .padding(.bottom, 50.0)
+            
             Text("Defender!")
+            
             Picker(selection: $selectedDefenderIndex, label: Text("Unit")) {
                 ForEach (unitsArray.indices) { index in
                     Text("\(unitsArray[index].name)").tag(index)
                 }
+                .onChange(of: selectedDefenderIndex) { _ in
+                    currentDefender = unitsArray[selectedDefenderIndex]
+                    selectedDefenderHealth = unitsArray[selectedDefenderIndex].health
+                    print("updated defender health: \(selectedDefenderHealth)")
+                    self.pickerID += 1
+                }
             }
+            
+            
             Picker(selection: $selectedDefenderHealth, label: Text("Unit")) {
-                Text("\(Int(self.unitsArray[selectedDefenderIndex].maxHealth))").tag(1)
-                ForEach (1..<Int(self.unitsArray[selectedDefenderIndex].health)) { index in
+                Text("\(Int(selectedDefenderHealth))").tag(1)
+                ForEach (1..<Int(selectedDefenderHealth)) { index in
                     Text("\(index)").tag(index)
                 }
             }
-            Text(String(self.unitsArray[selectedDefenderIndex].health))
+            .id(pickerID)
+            Text(String(self.currentDefender.health))
                 .padding(.bottom, 50.0)
 //            Button(action: {
 //                showAlert = true
@@ -61,18 +77,18 @@ struct ContentView: View {
 //            }
 //            .alert(isPresented: $showAlert, content: Alert(title: "blah"))
             Button("Calculate") {
-                unitsArray[selectedAttackerIndex].health = Double(selectedAttackerHealth)
-                //find a more elegant way of updating the health of each unit
-//                currentAttacker = Unit(name: unitsArray[selectedAttackerIndex].name, attack: unitsArray[selectedAttackerIndex].attack, defense: unitsArray[selectedAttackerIndex].defense, maxHealth: unitsArray[selectedAttackerIndex].maxHealth, health: Double(selectedAttackerHealth), defenceBonus: unitsArray[selectedAttackerIndex].defenceBonus)ahh 
+                //unitsArray[selectedAttackerIndex].health = Double(selectedAttackerHealth)
                 
                 currentAttacker = unitsArray[selectedAttackerIndex]
+                currentAttacker.health = Double(selectedAttackerHealth)
+                print(currentAttacker)
                 
-//                currentDefender = Unit(name: unitsArray[selectedDefenderIndex].name, attack: unitsArray[selectedDefenderIndex].attack, defense: unitsArray[selectedDefenderIndex].defense, maxHealth: unitsArray[selectedDefenderIndex].maxHealth, health: Double(selectedDefenderHealth), defenceBonus: unitsArray[selectedDefenderIndex].defenceBonus)
-                
-                
-                unitsArray[selectedDefenderIndex].health = Double(selectedDefenderHealth)
+//                unitsArray[selectedDefenderIndex].health = Double(selectedDefenderHealth)
                 
                 currentDefender = unitsArray[selectedDefenderIndex]
+                currentDefender.health = Double(selectedDefenderHealth)
+                print(currentDefender)
+                
                 showAlert = true
             }
             .alert(isPresented: $showAlert) {
@@ -138,10 +154,11 @@ func calculate(attacker: Unit, defender: Unit) -> [String] {
     
     let defenceBonus = 1.0
     //**need to figure out how to set this
-    
+    print("attacker \(attacker)")
+    print("defender \(defender)")
     let attackForce = attackForce(power:attacker.attack,health:attacker.health,maxHealth:attacker.maxHealth)
     let defenceForce = defenseForce(power:defender.defense,health:defender.health,maxHealth:defender.maxHealth,defenseBonus:defenceBonus)
-    
+    print(defenceForce)
     let totalDamage = attackForce + defenceForce
     
     let attackResult = attackResult(attackForce: attackForce, totalDamage: totalDamage, power: attacker.attack)
@@ -151,7 +168,14 @@ func calculate(attacker: Unit, defender: Unit) -> [String] {
     
     print(String(defender.health))
     print("blahblah")
-    return [String(attacker.health - attackResult),String(defender.health-defendResult)]
+    
+    if(defender.health-defendResult >= 0) {
+        return [String(attacker.health - attackResult),String(defender.health-defendResult)]
+    } else {
+        print("defender killed")
+        return [String(attacker.health),String(defender.health-defendResult)]
+    }
+
 }
 
 //func calculateDefenderRemainingHealth() -> String {
