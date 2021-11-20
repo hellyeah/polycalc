@@ -63,7 +63,7 @@ struct ContentView: View {
             Button("Calculate") {
                 unitsArray[selectedAttackerIndex].health = Double(selectedAttackerHealth)
                 //find a more elegant way of updating the health of each unit
-//                currentAttacker = Unit(name: unitsArray[selectedAttackerIndex].name, attack: unitsArray[selectedAttackerIndex].attack, defense: unitsArray[selectedAttackerIndex].defense, maxHealth: unitsArray[selectedAttackerIndex].maxHealth, health: Double(selectedAttackerHealth), defenceBonus: unitsArray[selectedAttackerIndex].defenceBonus)
+//                currentAttacker = Unit(name: unitsArray[selectedAttackerIndex].name, attack: unitsArray[selectedAttackerIndex].attack, defense: unitsArray[selectedAttackerIndex].defense, maxHealth: unitsArray[selectedAttackerIndex].maxHealth, health: Double(selectedAttackerHealth), defenceBonus: unitsArray[selectedAttackerIndex].defenceBonus)ahh 
                 
                 currentAttacker = unitsArray[selectedAttackerIndex]
                 
